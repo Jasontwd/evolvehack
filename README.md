@@ -157,10 +157,6 @@ A full bill of materials with part numbers, suppliers and prices will be added o
 - [ ] Throttle curve and current limit tuning
 - [ ] Ride testing and range figures
 
-## Also in this repo
-
-- `LarsonScannerTrinketM0` is an Arduino sketch for a 16-pixel NeoPixel "Larson scanner" light bar on an Adafruit Trinket M0, adapted from Adafruit's example (MIT). Board lighting, unrelated to the drivetrain.
-
 ## Safety
 
 This is high-energy lithium work. A 12S4P pack of 21700 cells can deliver hundreds of amps into a short circuit and will start a fire if mishandled.
