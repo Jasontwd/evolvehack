@@ -2,11 +2,11 @@
 
 **Open-source Flipsky / VESC conversion for the Evolve Hadean electric skateboard.**
 
-This repo documents how a 2022 Evolve Hadean with a failed battery PCB was brought back to life by replacing the proprietary Evolve electronics with open, repairable parts: a Flipsky Dual FSESC6.7 Plus motor controller, a Flipsky VX4 Pro remote and a VESC-compatible BMS, keeping the original deck, trucks and cells.
+This repo documents how a 2022 Evolve Hadean with a failed battery PCB was brought back to life by replacing the proprietary Evolve electronics with open, repairable parts: a Flipsky Dual FSESC6.7 Plus motor controller, a Flipsky VX4 Pro remote and a separate Bluetooth smart BMS, keeping the original deck, trucks and cells.
 
 If your Hadean cuts out mid-ride, powers on only sometimes, or has been quoted a whole new battery for what looks like a connection fault, this is for you.
 
-> **Status: work in progress.** The fault is diagnosed, the cells have been rewired, and the controller, motors and remote are on the board. Wiring, BMS and configuration are being written up as the build progresses. See [Roadmap](#roadmap).
+> **Status: work in progress.** The board is rebuilt and powering up: pack repaired, new BMS charging and balancing, controller and motors fitted in a 3D-printed enclosure, remote paired. Configuration, printable files and ride testing are still being written up. See [Roadmap](#roadmap).
 
 ---
 
@@ -51,11 +51,11 @@ The power switch lead and its JST connector were real faults too, and worth chec
 ### What stays
 
 - Deck, trucks and wheels
-- The original 21700 cells, rewired as a 12S4P pack off the cracked PCB
+- The original 21700 cells (12S4P), still mounted on the original battery PCB, with the cracked series paths bypassed (see [Battery repair](#battery-repair))
 
 ### What goes
 
-- Evolve battery PCB with integrated BMS
+- The Evolve BMS on the battery PCB
 - Evolve motor controller
 - Evolve remote and its receiver (the stock remote only talks to the stock controller)
 - Stock motors
@@ -67,14 +67,59 @@ The power switch lead and its JST connector were real faults too, and worth chec
 | Motor controller | Flipsky Dual FSESC6.7 Plus with aluminium case | VESC 6-based dual controller, one unit drives both motors |
 | Motors | 2 x Glide 6374, 190 KV, 3500 W | From glide-esk8.co.nz |
 | Remote | Flipsky VX4 Pro | With its matching receiver |
-| BMS | VESC-compatible 12S smart BMS | Separate, replaceable board. Model to be confirmed |
-| Cell interconnects | Rewired 12S4P pack | No structural PCB carrying series current |
-| Power switch | To be confirmed | Anti-spark switch or loop key |
+| BMS | Bluetooth smart BMS, common port | Separate, replaceable board in the battery bay. Model to be confirmed |
+| Cell interconnects | Series links bridged at the cell tabs | Pack current no longer depends on the PCB's internal traces |
+| Power switch | Illuminated metal push button | Mounted in the controller enclosure |
+| Controller enclosure | 3D-printed two-part case with gasket | Bolts to the rear of the deck. Print files to be added |
+| Main leads | 12 AWG silicone wire | Pack to controller |
 | Configuration | [VESC Tool](https://vesc-project.com/vesc_tool) | Free, open source |
 
 | Controller | Motor | Remote |
 |---|---|---|
 | ![Flipsky Dual FSESC6.7 Plus](images/flipsky-dual-fsesc67-plus.jpg) | ![Glide 6374 190 KV motor](images/glide-6374-190kv-motor.jpg) | ![Flipsky VX4 Pro remote](images/flipsky-vx4-pro-remote.jpg) |
+
+### Battery repair
+
+The cells were left on the original Evolve battery PCB. Rather than trusting the board's internal copper to carry pack current, each series link is bridged directly at the nickel cell tabs, so the cracked traces around B8 and B9 are out of the circuit.
+
+- Series links soldered across the tab pairs between neighbouring cell groups, B1 through B12
+- New 24 AWG balance leads soldered to each group's tab and run back to the new BMS
+- New 12 AWG main positive and negative leads taken straight from the B12+ and B0 tabs
+- Exposed joints sealed with liquid electrical tape
+- The original BMS end of the PCB removed, with the new BMS and its Bluetooth module mounted in the freed space
+
+| Battery bay | B8 to B10, where the fault was | B10 to B12 and main positive |
+|---|---|---|
+| ![Battery bay with balance leads and new BMS](images/battery-bay-overview.jpg) | ![Bridged tabs B8 to B10](images/battery-pcb-b8-b10.jpg) | ![B12 positive with main lead](images/battery-pcb-b10-b12.jpg) |
+
+More close-ups: [B0 to B2](images/battery-pcb-b0-b2.jpg), [B4 to B6](images/battery-pcb-b4-b6.jpg), [B6 to B8](images/battery-pcb-b6-b8.jpg).
+
+### BMS
+
+The new BMS is a common-port Bluetooth smart BMS: pack negative goes to B-, charger and controller negative share C-, and pack positive goes straight to the charger and controller. Balance leads plug into the BMS, and a small Bluetooth module gives live cell voltages, current and temperatures in a phone app.
+
+| BMS Bluetooth module | App while charging |
+|---|---|
+| ![BMS Bluetooth module in the battery bay](images/bms-bluetooth-module.jpg) | ![BMS app showing 12 balanced cell groups while charging](images/bms-app-charging.jpg) |
+
+With the series links bridged, all 12 groups sit within about 10 mV of each other and the pack reads its full voltage again, compared with 40.8 V before the repair.
+
+**Known issue:** the BMS has 13 cell channels and the pack is 12S, so the app shows a phantom cell 13 at about 0.23 V. Cell count and pack capacity still need setting correctly in the BMS (see Roadmap).
+
+### Controller enclosure
+
+The FSESC6.7 Plus sits in a 3D-printed two-part enclosure at the rear of the deck, with a gasket between the halves and the power button in the end face. Motor phase leads exit underneath in braided sleeving.
+
+| Rear drive | Enclosure | Side |
+|---|---|---|
+| ![Rear of the board with enclosure and motors](images/rear-drive-overview.jpg) | ![3D-printed controller enclosure with power button](images/esc-enclosure-top.jpg) | ![Enclosure side view with gasket and main leads](images/esc-enclosure-side.jpg) |
+
+### VESC setup so far
+
+- Connected to VESC Tool on Android over Bluetooth
+- The two sides of the dual controller are linked over CAN: local VESC ID 69, second VESC ID 7
+- CAN baud rate 500K
+- Remote input connected to the local VESC (ID 69)
 
 ### Controller ports
 
@@ -94,15 +139,18 @@ A full bill of materials with part numbers, suppliers and prices will be added o
 ## Roadmap
 
 - [x] Diagnose the fault
-- [x] Remove cells from the cracked PCB and rewire as 12S4P
+- [x] Bypass the cracked PCB traces and fit new balance and main leads
+- [x] Fit and wire the new BMS
 - [x] Fit controller, motors and remote
+- [x] Design and print the controller enclosure
+- [x] Build photos
+- [ ] Set BMS cell count to 12 and pack capacity to 16 Ah, and clear the phantom cell 13
 - [ ] Bill of materials with part numbers and costs
 - [ ] Wiring diagram: pack, BMS, ESC, motors, charge port
 - [ ] Motor phase and hall sensor wiring for the Glide 6374 motors
-- [ ] 3D-printable mounts and enclosure parts (STL / STEP)
+- [ ] Enclosure print files (STL / STEP) and print settings
 - [ ] VESC Tool motor detection results and configuration files
-- [ ] Remote pairing and throttle curve setup
-- [ ] Photos of the teardown and the finished build
+- [ ] Throttle curve and current limit tuning
 - [ ] Ride testing and range figures
 
 ## Also in this repo
