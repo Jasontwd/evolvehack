@@ -86,7 +86,7 @@ The cells were left on the original Evolve battery PCB. Rather than trusting the
 - New 24 AWG balance leads soldered to each group's tab and run back to the new BMS
 - New 12 AWG main positive and negative leads taken straight from the B12+ and B0 tabs
 - Exposed joints sealed with liquid electrical tape
-- The original BMS end of the PCB removed, with the new BMS and its Bluetooth module mounted in the freed space
+- The end section of the PCB cut off to make room for the new BMS (see [BMS](#bms))
 
 | Battery bay | B8 to B10, where the fault was | B10 to B12 and main positive |
 |---|---|---|
@@ -97,6 +97,10 @@ More close-ups: [B0 to B2](images/battery-pcb-b0-b2.jpg), [B4 to B6](images/batt
 ### BMS
 
 The new BMS is a common-port Bluetooth smart BMS: pack negative goes to B-, charger and controller negative share C-, and pack positive goes straight to the charger and controller. Balance leads plug into the BMS, and a small Bluetooth module gives live cell voltages, current and temperatures in a phone app.
+
+To make room for it, the main battery PCB was cut with a Dremel cutting wheel along the red line below and the end section removed. The new BMS and its Bluetooth module sit in the freed space at the end of the battery bay.
+
+![Battery PCB cut line marked in red, with the new BMS fitted in the freed space](images/battery-pcb-cut-line.png)
 
 | BMS Bluetooth module | App while charging |
 |---|---|
