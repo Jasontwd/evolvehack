@@ -2,11 +2,11 @@
 
 **Open-source Flipsky / VESC conversion for the Evolve Hadean electric skateboard.**
 
-This repo documents how a 2022 Evolve Hadean with a failed battery PCB was brought back to life by replacing the proprietary Evolve electronics with open, repairable parts: a Flipsky VESC-based motor controller and a VESC-compatible BMS, keeping the original deck, motors, drivetrain and cells.
+This repo documents how a 2022 Evolve Hadean with a failed battery PCB was brought back to life by replacing the proprietary Evolve electronics with open, repairable parts: a Flipsky Dual FSESC6.7 Plus motor controller, a Flipsky VX4 Pro remote and a VESC-compatible BMS, keeping the original deck, trucks and cells.
 
 If your Hadean cuts out mid-ride, powers on only sometimes, or has been quoted a whole new battery for what looks like a connection fault, this is for you.
 
-> **Status: work in progress.** The fault is diagnosed and the cells have been rewired. Controller, BMS and remote setup are being written up as the build progresses. See [Roadmap](#roadmap).
+> **Status: work in progress.** The fault is diagnosed, the cells have been rewired, and the controller, motors and remote are on the board. Wiring, BMS and configuration are being written up as the build progresses. See [Roadmap](#roadmap).
 
 ---
 
@@ -50,8 +50,7 @@ The power switch lead and its JST connector were real faults too, and worth chec
 
 ### What stays
 
-- Deck, trucks, wheels and drivetrain
-- Both motors
+- Deck, trucks and wheels
 - The original 21700 cells, rewired as a 12S4P pack off the cracked PCB
 
 ### What goes
@@ -59,17 +58,36 @@ The power switch lead and its JST connector were real faults too, and worth chec
 - Evolve battery PCB with integrated BMS
 - Evolve motor controller
 - Evolve remote and its receiver (the stock remote only talks to the stock controller)
+- Stock motors
 
 ### What replaces it
 
 | Part | Replacement | Notes |
 |---|---|---|
-| Motor controller | Flipsky VESC 6-based dual ESC | Exact model to be confirmed in the BOM |
-| BMS | VESC-compatible 12S smart BMS | Separate, replaceable board |
+| Motor controller | Flipsky Dual FSESC6.7 Plus with aluminium case | VESC 6-based dual controller, one unit drives both motors |
+| Motors | 2 x Glide 6374, 190 KV, 3500 W | From glide-esk8.co.nz |
+| Remote | Flipsky VX4 Pro | With its matching receiver |
+| BMS | VESC-compatible 12S smart BMS | Separate, replaceable board. Model to be confirmed |
 | Cell interconnects | Rewired 12S4P pack | No structural PCB carrying series current |
-| Remote | VESC-compatible remote and receiver | To be confirmed |
 | Power switch | To be confirmed | Anti-spark switch or loop key |
 | Configuration | [VESC Tool](https://vesc-project.com/vesc_tool) | Free, open source |
+
+| Controller | Motor | Remote |
+|---|---|---|
+| ![Flipsky Dual FSESC6.7 Plus](images/flipsky-dual-fsesc67-plus.jpg) | ![Glide 6374 190 KV motor](images/glide-6374-190kv-motor.jpg) | ![Flipsky VX4 Pro remote](images/flipsky-vx4-pro-remote.jpg) |
+
+### Controller ports
+
+The FSESC6.7 Plus case is labelled with its pinouts, which makes wiring far easier than the stock controller. As printed on the case:
+
+| Port | Pins | Used for |
+|---|---|---|
+| Hall sensor (one per motor) | 5V, TMP, H1, H2, H3, GND | Motor hall sensors and temperature |
+| Receiver | PPM, 5V, GND, TX, RX, BAT | Remote receiver |
+| COMM (one per side) | ADC3, ADC2, TX, RX, ADC1, GND, 3.3V, 5V | UART and analogue inputs |
+| CAN | 5V, CH, CL, GND | CAN bus accessories, such as a BMS |
+| Switch | F-, NO, B+, GND, 5V | Power button |
+| USB1 / USB2 | Micro USB | VESC Tool, one port per motor side |
 
 A full bill of materials with part numbers, suppliers and prices will be added once the build is finalised.
 
@@ -77,9 +95,10 @@ A full bill of materials with part numbers, suppliers and prices will be added o
 
 - [x] Diagnose the fault
 - [x] Remove cells from the cracked PCB and rewire as 12S4P
+- [x] Fit controller, motors and remote
 - [ ] Bill of materials with part numbers and costs
 - [ ] Wiring diagram: pack, BMS, ESC, motors, charge port
-- [ ] Motor connector and sensor pinouts for the Hadean motors
+- [ ] Motor phase and hall sensor wiring for the Glide 6374 motors
 - [ ] 3D-printable mounts and enclosure parts (STL / STEP)
 - [ ] VESC Tool motor detection results and configuration files
 - [ ] Remote pairing and throttle curve setup
